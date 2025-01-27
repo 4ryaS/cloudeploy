@@ -9,7 +9,7 @@ export const uploadFileToStorage = async (localFilePath: string, id: string) => 
         const newFileName = fileName.replace(/\\/g, '/');
 
         await bucket.upload(localFilePath, {
-            destination: `output/${id}/${fileName}`
+            destination: `output/${id}/${newFileName}`
         })
 
     } catch (error) {
