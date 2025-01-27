@@ -26,6 +26,7 @@ app.post("/deploy", async (req, res) => {
     await simpleGit().clone(repoUrl, path.join(__dirname, `output/${id}`));
 
     const files = getAllFiles(path.join(__dirname, `output/${id}`));
+
     files.forEach(file => {
         uploadFileToStorage(file, id);
     })
