@@ -29,7 +29,7 @@ app.post("/deploy", async (req, res) => {
 
     res.json({
         id: id
-    })
+    });
 })
 
-app.listen(3000);
+app.listen(4000);

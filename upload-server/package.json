@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -p .",
+    "start": "npx nodemon dist/index",
+    "dev": "tsc-watch --onSuccess \"npm start\""
   },
   "keywords": [],
   "author": "",
@@ -18,6 +21,7 @@
     "express": "^4.21.2",
     "redis": "^4.7.0",
     "simple-git": "^3.27.0",
+    "tsc-watch": "^6.2.1",
     "typescript": "^5.7.3",
     "uuid": "^11.0.5"
   }
