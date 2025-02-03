@@ -8,5 +8,12 @@
   "main": "script.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@types/dockerode": "^3.3.34",
+    "@types/express": "^5.0.0",
+    "dockerode": "^4.0.4",
+    "express": "^4.21.2",
+    "typescript": "^5.7.3"
   }
 }
