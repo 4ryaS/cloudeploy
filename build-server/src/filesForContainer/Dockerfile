@@ -9,16 +9,9 @@ RUN apt-get install -y nodejs
 
 RUN apt-get install git -y
 
-WORKDIR /app/home
-
-COPY entry_point.sh entry_point.sh
+WORKDIR /home/app
 
 COPY script.js script.js
-COPY package*.json .
+COPY pushToStorage.js pushToStorage.js
 
-RUN npm install
-
-RUN chmod +x entry_point.sh
 RUN chmod +x script.js
-
-ENTRYPOINT [ "/home/app/entry_point.sh" ]
