@@ -8,7 +8,7 @@ async function init() {
     console.log("Executing script.js");
 
     const outDirPath = path.join(__dirname, 'output');
-    const id = process.env.DEPLOY_ID || 'default_id';
+    const id = process.env.DEPLOY_ID || "";
     console.log("Deploy ID:", id);
 
     // Run `npm install`
@@ -20,7 +20,6 @@ async function init() {
     installProcess.on('close', () => {
         console.log("npm install complete. Running build...");
 
-        // Run `npm run build`
         const buildProcess = spawn('npm', ['run', 'build'], { cwd: outDirPath, shell: true });
 
         buildProcess.stdout.on('data', (data) => console.log(data.toString()));

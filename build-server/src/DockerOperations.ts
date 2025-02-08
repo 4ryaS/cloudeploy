@@ -14,7 +14,7 @@ async function buildImage() {
                 if (err) {
                     return reject(err);
                 }
-                // stream?.pipe(process.stdout, { end: true });
+                stream?.pipe(process.stdout, { end: true });
                 stream?.on("end", () => resolve(""));
             })
     })
@@ -25,11 +25,19 @@ async function createAndStartContainer(repoUrl: string, id: string) {
 
      docker.createContainer({
         Image: `cloudeploy`,
-        name: "",
         Tty: true,
         AttachStderr: true,
         AttachStdout: true,
-        Cmd: ["sh", "-c", `export DEPLOY_ID=${id} && git clone ${repoUrl} /home/app/output && node script.js && tail -f /dev/null`]
+        Env: [
+            `DEPLOY_ID=${id}`,
+            `GOOGLE_APPLICATION_CREDENTIALS=/key.json`
+        ],
+        Cmd: ["sh", "-c", `export DEPLOY_ID=${id} && git clone ${repoUrl} /home/app/output && node script.js && tail -f /dev/null`],
+        HostConfig: {
+            Binds: [
+                `C:/cs/cloudeploy-904e29a16e63.json:/key.json:ro`
+            ]
+        }
     }).then(container => {
         container.start().then(() => {
             console.log("starting container");
