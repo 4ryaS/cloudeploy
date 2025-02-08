@@ -28,7 +28,19 @@ async function init() {
         buildProcess.on('close', async () => {
             console.log("Build Complete! Uploading to storage...");
 
-            const distFolderPath = path.join(__dirname, 'output', 'dist');
+            var distFolderPath = "";
+            const mainFolderPath = path.join(__dirname, 'output');
+            const mainFolderContents = fs.readdirSync(mainFolderPath);
+            for (const distFolder of mainFolderContents) {
+                if (distFolder === "build") {
+                    distFolderPath = path.join(__dirname, 'output', 'build');
+                    break;
+                } else if (distFolder === "dist") {
+                    distFolderPath = path.join(__dirname, 'output', 'dist');
+                    break;
+                }
+            }
+
             const distFolderContents = fs.readdirSync(distFolderPath, { recursive: true });
 
             const uploadPromises = distFolderContents.map(async (filePath) => {

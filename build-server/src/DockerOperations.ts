@@ -32,7 +32,7 @@ async function createAndStartContainer(repoUrl: string, id: string) {
             `DEPLOY_ID=${id}`,
             `GOOGLE_APPLICATION_CREDENTIALS=/key.json`
         ],
-        Cmd: ["sh", "-c", `export DEPLOY_ID=${id} && git clone ${repoUrl} /home/app/output && node script.js && tail -f /dev/null`],
+        Cmd: ["sh", "-c", `export DEPLOY_ID=${id} && git clone --depth 1 ${repoUrl} /home/app/output && node script.js && tail -f /dev/null`],
         HostConfig: {
             Binds: [
                 `C:/cs/cloudeploy-904e29a16e63.json:/key.json:ro`
@@ -51,7 +51,7 @@ async function createAndStartContainer(repoUrl: string, id: string) {
 
 export async function run(repoUrl: string, deployId: string) {
     try {
-        await buildImage();
+        // await buildImage();
         await createAndStartContainer(repoUrl, deployId);
     } catch (error) {
         console.error(error);

@@ -7,7 +7,7 @@ app.use(express.json());
 
 
 app.post("/deploy", async (req, res) => {
-    const id = nanoid();
+    const id = nanoid().toLowerCase();
     console.log(id);    
     const { repoUrl } = req.body;
     if (!repoUrl) {
@@ -19,6 +19,7 @@ app.post("/deploy", async (req, res) => {
 
     try {
         await run(repoUrl, id);
+        res.json(id);
     } catch (error) {
         console.log(error);
     }
