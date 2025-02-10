@@ -51,7 +51,7 @@ async function createAndStartContainer(repoUrl: string, id: string) {
 
 export async function run(repoUrl: string, deployId: string) {
     try {
-        // await buildImage();
+        await buildImage();
         await createAndStartContainer(repoUrl, deployId);
     } catch (error) {
         console.error(error);
