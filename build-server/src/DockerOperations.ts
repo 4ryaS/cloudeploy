@@ -35,7 +35,7 @@ async function createAndStartContainer(repoUrl: string, id: string) {
         Cmd: ["sh", "-c", `export DEPLOY_ID=${id} && git clone --depth 1 ${repoUrl} /home/app/output && node script.js`],
         HostConfig: {
             Binds: [
-                `C:/cs/cloudeploy-904e29a16e63.json:/key.json:ro`
+                `/home/harwanidev/cloudeply.json:/key.json:ro`
             ],
             AutoRemove: true
         }
