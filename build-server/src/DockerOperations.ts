@@ -36,7 +36,8 @@ async function createAndStartContainer(repoUrl: string, id: string) {
         HostConfig: {
             Binds: [
                 `C:/cs/cloudeploy-904e29a16e63.json:/key.json:ro`
-            ]
+            ],
+            AutoRemove: true
         }
     }).then(container => {
         container.start().then(() => {
