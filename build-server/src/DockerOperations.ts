@@ -36,7 +36,8 @@ async function createAndStartContainer(repoUrl: string, id: string) {
         HostConfig: {
             Binds: [
                 `/home/harwanidev/cloudeply.json:/key.json:ro`
-            ]
+            ],
+            AutoRemove: true
         }
     }).then(container => {
         container.start().then(() => {
@@ -51,7 +52,7 @@ async function createAndStartContainer(repoUrl: string, id: string) {
 
 export async function run(repoUrl: string, deployId: string) {
     try {
-        await buildImage();
+        // await buildImage();
         await createAndStartContainer(repoUrl, deployId);
     } catch (error) {
         console.error(error);
