@@ -59,7 +59,7 @@ async function init() {
             await Promise.all(uploadPromises.filter(p => p !== undefined));
 
             console.log("Upload complete!");
-        });
+        }); 
     });
 
     installProcess.on('error', (err) => {
