@@ -8,7 +8,6 @@ const bucketName = "cloudeploy";
 const app = express();
 
 app.get("/*", async (req, res) => {
-    console.log("here");
     
     const host = req.hostname;
     const id = host.split(".")[0];
