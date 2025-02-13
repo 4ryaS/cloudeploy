@@ -18,6 +18,7 @@ app.get("/*", async (req, res) => {
         const [exists] = await file.exists();
         if (!exists) {
             res.status(404).send("File not found");
+            return;
         }
 
         const [contents] = await file.download();
