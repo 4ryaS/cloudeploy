@@ -1,6 +1,6 @@
 import express from "express";
 import { run } from "./DockerOperations";
-import { nanoid } from "nanoid";
+import { generate } from "random-words";
 
 const app = express();
 app.use(express.json());
@@ -12,19 +12,19 @@ function isValidGitCloneUrl(url: string) {
 }
 
 app.post("/deploy", async (req, res) => {
-    const id = nanoid().toLowerCase();
+    const id = generate({ exactly: 3, join: '-' });
     console.log(id);    
     const { repoUrl } = req.body;
     if (!repoUrl) {
         res.json({
-            message: "require repoUrl"
+            message: "repoUrl is required!"
         })
         return;
     };
 
     if(!isValidGitCloneUrl(repoUrl)){
         res.json({
-            message: "the provided url is invalid"
+            message: "the provided url is invalid!"
         })
         return;
     }
