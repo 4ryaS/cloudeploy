@@ -23,4 +23,3 @@ RUN npm config set registry https://registry.npmjs.org/ && \
     npm cache clean --force && \
     npm init -y && \
     npm install --no-fund --no-audit @google-cloud/storage
-
