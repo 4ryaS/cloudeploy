@@ -17,13 +17,13 @@ async function buildImage() {
                 stream?.pipe(process.stdout, { end: true });
                 stream?.on("end", () => resolve(""));
             })
-    })
+    });
 }
 
 async function createAndStartContainer(repoUrl: string, id: string) {
     console.log("Creating Docker container...");
 
-     docker.createContainer({
+    docker.createContainer({
         Image: `cloudeploy`,
         Tty: true,
         AttachStderr: true,
@@ -47,7 +47,7 @@ async function createAndStartContainer(repoUrl: string, id: string) {
         })
     }).catch((err) => {
         console.error(err);
-    })
+    });
 }
 
 export async function run(repoUrl: string, deployId: string) {

@@ -1,15 +1,10 @@
 import express from "express";
 import { run } from "./DockerOperations";
 import { generate } from "random-words";
+import { isValidGitCloneUrl } from "./utils/githubCheck";
 
 const app = express();
 app.use(express.json());
-
-const gitUrlRegex = /^(?:git@[\w.-]+:[\w./-]+\.git|https?:\/\/[\w.-]+\/[\w./-]+\.git)$/;
-
-function isValidGitCloneUrl(url: string) {
-    return gitUrlRegex.test(url);
-}
 
 app.post("/deploy", async (req, res) => {
     const id = generate({ exactly: 3, join: '-' });
@@ -29,16 +24,15 @@ app.post("/deploy", async (req, res) => {
         return;
     }
     
-
     try {
         await run(repoUrl, id);
         res.json(id);
-    } catch (error) {
+    } 
+    catch (error) {
         console.log(error);
     }
 })
 
-app.listen(3000);
-
-
-
+app.listen(3000, () => {
+    console.log("The server is live at port 3000");
+});
