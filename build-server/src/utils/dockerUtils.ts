@@ -6,7 +6,7 @@ const docker = new Docker();
 
 async function buildImage() {
     console.log("building docker image");
-    const dockerFilePath = path.resolve(__dirname, 'filesForContainer');
+    const dockerFilePath = path.resolve(__dirname, 'container-files');
     return new Promise((resolve, reject) => {
         docker.buildImage(tar.pack(dockerFilePath, { entries: ["Dockerfile", "script.js", "pushToStorage.js"] }),
             { t: `cloudeploy`, dockerfile: "Dockerfile" },

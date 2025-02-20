@@ -1,7 +1,7 @@
 import express from "express";
-import { run } from "./DockerOperations";
+import { run } from "./utils/dockerUtils";
 import { generate } from "random-words";
-import { isValidGitCloneUrl } from "./utils/githubCheck";
+import { isValidGitCloneUrl } from "./utils/gitUtils";
 
 const app = express();
 app.use(express.json());
