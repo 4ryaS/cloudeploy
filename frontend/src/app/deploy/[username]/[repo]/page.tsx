@@ -9,11 +9,26 @@ import Link from "next/link"
 
 export default function DeploymentStatus() {
   const params = useParams()
-  const { repo } = params
+  const { username, repo } = params
+
   const [status, setStatus] = useState("pending")
+  const [id, setId] = useState("");
 
   useEffect(() => {
-    // Simulating deployment process
+    async function deploy() {
+      const response = await fetch("http://cloudeploy.0xdevs.xyz", {
+        method: "POST",
+        body: JSON.stringify({
+          repoUrl: `https://github.com/${username}/${repo}.git`
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+      const id = await response.json();
+      setId(id);
+    }
+
     const timer = setTimeout(() => {
       setStatus("completed")
     }, 5000)
@@ -42,12 +57,12 @@ export default function DeploymentStatus() {
                     <p className="text-xl mb-4">Deployment completed successfully!</p>
                     <p className="text-gray-400 mb-4">Your app is now live at:</p>
                     <a
-                      href={`https://${repo}.example.com`}
+                      href={`http://${id}.oxdevs.xyz`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-400 hover:underline mb-6"
                     >
-                      https://{repo}.example.com
+                      http://{id}.0xdevs.xyz
                     </a>
                   </>
                 )}

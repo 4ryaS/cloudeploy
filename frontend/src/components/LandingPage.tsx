@@ -37,7 +37,7 @@ export default function LandingPage() {
         description: item.description,
         updatedAt: item.updated_at,
       }));
-      setRepos([...repos, ...repositories])
+      setRepos(repositories)
     } catch (error) {
       console.log(error);
     }
@@ -65,7 +65,7 @@ export default function LandingPage() {
           <form onSubmit={handleSubmit} className="flex gap-4 mb-12">
             <Input
               type="text"
-              placeholder="Enter your GitHub ID"
+              placeholder="Enter your GitHub username"
               value={githubId}
               onChange={(e) => setGithubId(e.target.value)}
               className="flex-grow text-black"
@@ -93,7 +93,7 @@ export default function LandingPage() {
                     <CardContent className="p-4">
                       <div className="flex justify-between items-start">
                         <h4 className="text-lg font-semibold">{repo.name}</h4>
-                        <Link href={`/deploy/${repo.name}`}>
+                        <Link href={`/deploy/${githubId}/${repo.name}`}>
                           <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
                             <Rocket className="mr-2 h-4 w-4" /> Deploy
                           </Button>
