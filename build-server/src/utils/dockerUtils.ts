@@ -6,7 +6,9 @@ const docker = new Docker();
 
 async function buildImage() {
     console.log("building docker image");
-    const dockerFilePath = path.resolve(__dirname, 'container-files');
+    const dirname = __dirname;
+    const containerFilesPath = dirname.split("\\utils")[0];
+    const dockerFilePath = path.resolve(containerFilesPath, 'container-files');
     return new Promise((resolve, reject) => {
         docker.buildImage(tar.pack(dockerFilePath, { entries: ["Dockerfile", "script.js", "pushToStorage.js"] })),
             { t: `cloudeploy`, dockerfile: "Dockerfile" },
@@ -32,10 +34,10 @@ async function createAndStartContainer(repoUrl: string, id: string) {
             `DEPLOY_ID=${id}`,
             `GOOGLE_APPLICATION_CREDENTIALS=/key.json`
         ],
-        Cmd: ["sh", "-c", `export DEPLOY_ID=${id} && git clone --depth 1 ${repoUrl} /home/app/output && node script.js`],
+        Cmd: ["sh", "-c", `export DEPLOY_ID=${id} && git clone --depth 1 ${repoUrl} /home/app/output && node script.js && tail -f`],
         HostConfig: {
             Binds: [
-                `/home/harwanidev/cloudeply.json:/key.json:ro`
+                `C:\\cs\\cloudeploy-904e29a16e63.json:/key.json:ro`
             ],
             AutoRemove: true
         }

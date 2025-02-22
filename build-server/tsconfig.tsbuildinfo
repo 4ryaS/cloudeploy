@@ -1,1 +1,1 @@
-{"root":["./src/dockeroperations.ts","./src/index.ts","./src/filesforcontainer/pushtostorage.ts","./src/filesforcontainer/script.ts"],"version":"5.7.3"}
+{"root":["./src/index.ts","./src/container-files/pushtostorage.ts","./src/container-files/script.ts","./src/routes/approutes.ts","./src/utils/dockerutils.ts","./src/utils/gitutils.ts"],"version":"5.7.3"}
