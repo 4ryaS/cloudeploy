@@ -34,7 +34,7 @@ async function createAndStartContainer(repoUrl: string, id: string) {
             `DEPLOY_ID=${id}`,
             `GOOGLE_APPLICATION_CREDENTIALS=/key.json`
         ],
-        Cmd: ["sh", "-c", `export DEPLOY_ID=${id} && git clone --depth 1 ${repoUrl} /home/app/output && node script.js && tail -f`],
+        Cmd: ["sh", "-c", `export DEPLOY_ID=${id} && git clone --depth 1 ${repoUrl} /home/app/output && node script.js`],
         HostConfig: {
             Binds: [
                 `C:\\cs\\cloudeploy-904e29a16e63.json:/key.json:ro`
