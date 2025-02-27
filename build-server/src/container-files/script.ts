@@ -11,24 +11,36 @@ async function init() {
     const id = process.env.DEPLOY_ID || "";
     console.log("Deploy ID:", id);
 
+    // Create a writable stream for the log file
+    const logFilePath = path.join(__dirname, 'build_process.log');
+    const logStream = fs.createWriteStream(logFilePath, { flags: 'a' }); // 'a' flag to append to the file
+    logStream.write(`Build Process Started at ${new Date().toISOString()}\n`);
+
+    // Function to log output to both console and log file
+    const logOutput = (data: any) => {
+        const output = data.toString();
+        console.log(output);
+        logStream.write(output);
+    };
+
     // Run `npm install`
     const installProcess = spawn('npm', ['install'], { cwd: outDirPath, shell: true });
 
-    installProcess.stdout.on('data', (data) => console.log(data.toString()));
-    installProcess.stderr.on('data', (data) => console.error(data.toString()));
+    installProcess.stdout.on('data', logOutput);
+    installProcess.stderr.on('data', logOutput);
 
     installProcess.on('close', () => {
-        console.log("npm install complete. Running build...");
+        logStream.write("\nnpm install complete. Running build...\n");
 
         const buildProcess = spawn('npm', ['run', 'build'], { cwd: outDirPath, shell: true });
 
-        buildProcess.stdout.on('data', (data) => console.log(data.toString()));
-        buildProcess.stderr.on('data', (data) => console.error(data.toString()));
+        buildProcess.stdout.on('data', logOutput);
+        buildProcess.stderr.on('data', logOutput);
 
         buildProcess.on('close', async () => {
-            console.log("Build Complete! Uploading to storage...");
+            logStream.write("\nBuild Complete! Uploading to storage...\n");
 
-            var distFolderPath = "";
+            let distFolderPath = "";
             const mainFolderPath = path.join(__dirname, 'output');
             const mainFolderContents = fs.readdirSync(mainFolderPath);
             for (const distFolder of mainFolderContents) {
@@ -58,12 +70,16 @@ async function init() {
             // Ensure only valid promises are awaited
             await Promise.all(uploadPromises.filter(p => p !== undefined));
 
-            console.log("Upload complete!");
+            logStream.write("\nUpload complete!\n");
+            logStream.write(`Build Process Completed at ${new Date().toISOString()}\n`);
+            logStream.end(); // Close the log file stream
         });
     });
 
     installProcess.on('error', (err) => {
         console.error("Process Error: ", err.message);
+        logStream.write(`Process Error: ${err.message}\n`);
+        logStream.end(); // Close the log file stream
     });
 }
 
