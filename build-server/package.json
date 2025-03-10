@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@google-cloud/storage": "^7.15.0",
+    "@prisma/client": "^6.4.1",
     "@types/dockerode": "^3.3.34",
     "@types/express": "^5.0.0",
     "@types/tar-fs": "^2.0.4",
@@ -22,5 +23,8 @@
     "random-words": "^2.0.1",
     "tar-fs": "^3.0.8",
     "typescript": "^5.7.3"
+  },
+  "devDependencies": {
+    "prisma": "^6.4.1"
   }
 }

@@ -1,5 +1,5 @@
 import { spawn } from 'child_process';
-import path from 'path';
+import path, { dirname } from 'path';
 import { promises as fsp } from 'fs';
 import fs from 'fs';
 import { uploadFile } from './pushToStorage';
@@ -9,7 +9,6 @@ async function init() {
 
     const outDirPath = path.join(__dirname, 'output');
     const id = process.env.DEPLOY_ID || "";
-    console.log("Deploy ID:", id);
 
     // Create a writable stream for the log file
     const logFilePath = path.join(__dirname, 'build_process.log');
@@ -19,7 +18,7 @@ async function init() {
     // Function to log output to both console and log file
     const logOutput = (data: any) => {
         const output = data.toString();
-        console.log(output);
+        // console.log(output);
         logStream.write(output);
     };
 
@@ -81,6 +80,11 @@ async function init() {
         logStream.write(`Process Error: ${err.message}\n`);
         logStream.end(); // Close the log file stream
     });
+    try {
+        uploadFile("build_process.log", path.join(__dirname, "output", "build_process.log"), id);
+    } catch (error) {
+        console.error("error: ",error);
+    }    
 }
 
 init();
