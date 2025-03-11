@@ -10,8 +10,10 @@ async function init() {
     const outDirPath = path.join(__dirname, 'output');
     const id = process.env.DEPLOY_ID || "";
 
+
+
     // Create a writable stream for the log file
-    const logFilePath = path.join(__dirname, 'build_process.log');
+    const logFilePath = path.join(__dirname, 'output', 'build_process.log');
     const logStream = fs.createWriteStream(logFilePath, { flags: 'a' }); // 'a' flag to append to the file
     logStream.write(`Build Process Started at ${new Date().toISOString()}\n`);
 
@@ -21,6 +23,17 @@ async function init() {
         // console.log(output);
         logStream.write(output);
     };
+
+    const UploadLogFile = () => {
+        return new Promise((resolve, reject) => {
+            try {
+                const result = uploadFile("build_process.log", logFilePath, id);
+                resolve(result);
+            } catch (error) {
+                reject(error);
+            }
+        })
+    }
 
     // Run `npm install`
     const installProcess = spawn('npm', ['install'], { cwd: outDirPath, shell: true });
@@ -72,19 +85,19 @@ async function init() {
             logStream.write("\nUpload complete!\n");
             logStream.write(`Build Process Completed at ${new Date().toISOString()}\n`);
             logStream.end(); // Close the log file stream
+            await UploadLogFile();
+            console.log("log file uploaded successfully!");
         });
     });
 
-    installProcess.on('error', (err) => {
+    installProcess.on('error', async (err) => {
         console.error("Process Error: ", err.message);
         logStream.write(`Process Error: ${err.message}\n`);
         logStream.end(); // Close the log file stream
+        await UploadLogFile();
+        console.log("log file uploaded successfully!");
     });
-    try {
-        uploadFile("build_process.log", path.join(__dirname, "output", "build_process.log"), id);
-    } catch (error) {
-        console.error("error: ",error);
-    }    
+
 }
 
 init();

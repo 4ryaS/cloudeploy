@@ -12,7 +12,7 @@ router.post('/deploy', async (req, res) => {
 
     // Check if repoUrl is provided
     if (!repoUrl) {
-        res.status(400).json({
+        res.status(201).json({
             message: 'repoUrl is required!',
         });
         return;
@@ -20,7 +20,7 @@ router.post('/deploy', async (req, res) => {
     
     // Validate the provided repoUrl
     if (!isValidGitCloneUrl(repoUrl)) {
-        res.status(400).json({
+        res.status(202).json({
             message: 'The provided URL is invalid!',
         });
         return;
@@ -32,7 +32,8 @@ router.post('/deploy', async (req, res) => {
         }
     });
     if(ifRepoExists) {
-        res.status(301).json({
+        res.status(203).json({
+            id: ifRepoExists.name,
             message: "repository exists in database"
         })
         return;
