@@ -25,9 +25,9 @@ async function init() {
     };
 
     const UploadLogFile = () => {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             try {
-                const result = uploadFile("build_process.log", logFilePath, id);
+                const result = await uploadFile("build_process.log", logFilePath, id);
                 resolve(result);
             } catch (error) {
                 reject(error);
