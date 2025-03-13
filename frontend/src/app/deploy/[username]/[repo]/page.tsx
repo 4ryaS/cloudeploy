@@ -9,32 +9,53 @@ import Link from "next/link"
 
 export default function DeploymentStatus() {
   const params = useParams()
-  const { username, repo } = params
+  const { username, repo } = params;
 
-  const [status, setStatus] = useState("pending")
-  const [id, setId] = useState("");
+  const [status, setStatus] = useState("deploying");
+  const [id, setId] = useState(null);
+  const [deploy, setDeploy] = useState(false);
+
+  async function deployRepo() {
+    const response = await fetch("/api/deploy", {
+      method: "POST",
+      body: JSON.stringify({
+        repoUrl: `https://github.com/${username}/${repo}.git`
+      }),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+    const data = await response.json();
+    console.log(data); 
+    setId(data.id);
+
+  }
 
   useEffect(() => {
-    async function deploy() {
-      const response = await fetch("http://cloudeploy.0xdevs.xyz", {
+    if (!id) return;
+
+    const interval = setInterval(async () => {
+      const response = await fetch("/api/getStatus", {
         method: "POST",
-        body: JSON.stringify({
-          repoUrl: `https://github.com/${username}/${repo}.git`
-        }),
+        body: JSON.stringify({ id }),
         headers: {
-          "Content-Type": "application/json"
-        }
-      })
-      const id = await response.json();
-      setId(id);
-    }
+          "Content-Type": "application/json",
+        },
+      });
 
-    const timer = setTimeout(() => {
-      setStatus("completed")
-    }, 5000)
+      const data = await response.json();
+      setStatus(data.message);
 
-    return () => clearTimeout(timer)
-  }, [])
+      if (data.message === "deployed") {
+        clearInterval(interval);
+      }
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [id]);
+
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
@@ -42,37 +63,67 @@ export default function DeploymentStatus() {
         <div className="max-w-2xl mx-auto">
           <Card className="bg-gray-700">
             <CardHeader>
-              <CardTitle className="text-2xl font-bold">Deployment Status: {repo}</CardTitle>
+              <CardTitle className="text-2xl font-bold">Deploying repository: {repo}</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="flex flex-col items-center justify-center p-6">
-                {status === "pending" ? (
-                  <>
-                    <Loader2 className="h-16 w-16 animate-spin text-blue-500 mb-4" />
-                    <p className="text-xl">Deployment in progress...</p>
-                  </>
-                ) : (
-                  <>
-                    <div className="text-green-500 text-6xl mb-4">✓</div>
-                    <p className="text-xl mb-4">Deployment completed successfully!</p>
-                    <p className="text-gray-400 mb-4">Your app is now live at:</p>
-                    <a
-                      href={`http://${id}.oxdevs.xyz`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-400 hover:underline mb-6"
-                    >
-                      http://{id}.0xdevs.xyz
-                    </a>
-                  </>
-                )}
-              </div>
-              <div className="flex justify-center mt-6">
-                <Link href="/">
-                  <Button>Back to Repositories</Button>
-                </Link>
-              </div>
-            </CardContent>
+            {
+              deploy === false &&
+              <CardContent>
+                <div className="flex flex-col items-center justify-center p-6">
+                  <Button onClick={() => {
+                    setDeploy(true);
+                    deployRepo();
+                  }}>Deploy</Button>
+                </div>
+              </CardContent>
+            }
+            {
+              deploy === true ? <CardContent>
+                <div className="flex flex-col items-center justify-center p-6">
+                  {status === "deploying" ? (
+                    <>
+                      <Loader2 className="h-16 w-16 animate-spin text-blue-500 mb-4" />
+                      <p className="text-xl">Deployment in progress...</p>
+                      {
+                        id !== null &&
+                        <>
+                          <p className="text-lg">Your app will be live on: </p>
+                          <a href={`http://${id}.0xdevs.xyz`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-400 hover:underline mb-6"
+                          >
+                            http://{id}.0xdevs.xyz
+                          </a>
+                        </>
+                      }
+
+                    </>
+                  ) : (
+                    <>
+                      <div className="text-green-500 text-6xl mb-4">✓</div>
+                      <p className="text-xl mb-4">Deployment completed successfully!</p>
+                      <p className="text-gray-400 mb-4">Your app is now live at:</p>
+                      <a
+                        href={`http://${id}.0xdevs.xyz/index.html`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-400 hover:underline mb-6"
+                      >
+                        http://{id}.0xdevs.xyz
+                      </a>
+                    </>
+                  )}
+                </div>
+                <div className="flex justify-center mt-6">
+                  <Link href="/">
+                    <Button>Back to Repositories</Button>
+                  </Link>
+                </div>
+              </CardContent> :
+                <>
+                </>
+            }
+
           </Card>
         </div>
       </main>
